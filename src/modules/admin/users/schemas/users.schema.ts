@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 import { RolesEnum } from '@decorators/roles.decorator';
 
 @Schema()
-export class Admin {
+export class User {
   @Prop({
     required: true,
     unique: true,
@@ -32,6 +32,6 @@ export class Admin {
   roles: RolesEnum[] = [];
 }
 
-export type AdminDocument = Admin & Document;
+export type UserDocument = User & Document;
 
-export const AdminSchema = SchemaFactory.createForClass(Admin).set('versionKey', false);
+export const UserSchema = SchemaFactory.createForClass(User).set('versionKey', false);

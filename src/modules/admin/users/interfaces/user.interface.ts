@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import { RolesEnum } from '@decorators/roles.decorator';
 
-export interface AdminInterface {
+export interface UserInterface {
   readonly _id: Types.ObjectId;
   readonly email: string;
   readonly password?: string;

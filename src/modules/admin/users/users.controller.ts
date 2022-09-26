@@ -17,34 +17,34 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipes/parse-object-id.pipe';
-import { Admin } from './schemas/admins.schema';
+import { User } from './schemas/users.schema';
+import UsersService from './users.service';
+import UsersResponseDto, { UserResponseDto } from 'src/modules/user/users/dto/user-response.dto';
 import Serialize from '@decorators/serialization.decorator';
 import Auth from '@decorators/auth.decorator';
 import WrapResponseInterceptor from '@interceptors/wrap-response.interceptor';
-import AdminService from './admins.service';
-import AdminsResponseDto, { AdminResponseDto } from './dto/admin-response.dto';
 
-@ApiTags('Admin')
+@ApiTags('Users')
 @ApiBearerAuth()
-@ApiExtraModels(Admin)
+@ApiExtraModels(User)
 @UseInterceptors(WrapResponseInterceptor)
 @Controller()
-export default class AdminsController {
-  constructor(private readonly adminService: AdminService) { }
+export default class UsersController {
+  constructor(private readonly usersService: UsersService) { }
 
   @ApiOkResponse({
     schema: {
       type: 'object',
       properties: {
         data: {
-          $ref: getSchemaPath(Admin),
+          $ref: getSchemaPath(User),
         },
       },
     },
-    description: '200. Success. Returns a admin',
+    description: '200. Success. Returns a user',
   })
   @ApiNotFoundResponse({
-    description: '404. NotFoundException. Admin was not found',
+    description: '404. NotFoundException. User was not found',
   })
   @ApiUnauthorizedResponse({
     schema: {
@@ -57,27 +57,27 @@ export default class AdminsController {
   })
   @ApiParam({ name: 'id', type: String })
   @Get(':id')
-  @Serialize(AdminResponseDto)
+  @Serialize(UserResponseDto)
   @Auth()
   async getById(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-  ): Promise<Admin> {
-    const foundAdmin = await this.adminService.getUnverifiedAdminById(id);
+  ): Promise<User> {
+    const foundUser = await this.usersService.getVerifiedUserById(id);
 
-    if (!foundAdmin) {
-      throw new NotFoundException('The admin does not exist');
+    if (!foundUser) {
+      throw new NotFoundException('The user does not exist');
     }
 
-    return foundAdmin;
+    return foundUser;
   }
 
   @ApiOkResponse({
-    description: '200. Success. Returns all admins',
+    description: '200. Success. Returns all users',
     schema: {
       type: 'object',
       properties: {
         data: {
-          $ref: getSchemaPath(Admin),
+          $ref: getSchemaPath(User),
         },
       },
     },
@@ -92,11 +92,11 @@ export default class AdminsController {
     description: '401. UnauthorizedException.',
   })
   @Get()
-  @Serialize(AdminsResponseDto)
+  @Serialize(UsersResponseDto)
   @Auth()
-  async getAllVerifiedAdmins() {
-    const foundAdmins = await this.adminService.getVerifiedAdmins();
+  async getAllVerifiedUsers() {
+    const foundUsers = await this.usersService.getVerifiedUsers();
 
-    return foundAdmins;
+    return foundUsers;
   }
 }

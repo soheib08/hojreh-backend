@@ -3,7 +3,7 @@ import { ValidateNested } from 'class-validator';
 import { ObjectId } from 'mongodb';
 import { RolesEnum } from '@decorators/roles.decorator';
 
-export class AdminResponseDto {
+export class UserResponseDto {
   @Transform(({ value }) => value.toString(), { toPlainOnly: true })
   _id: ObjectId = new ObjectId();
 
@@ -17,8 +17,8 @@ export class AdminResponseDto {
   password: string = '';
 }
 
-export default class AdminsResponseDto {
+export default class UsersResponseDto {
   @ValidateNested({ each: true })
-  @Type(() => AdminResponseDto)
-  data?: AdminResponseDto[] = []
+  @Type(() => UserResponseDto)
+  data?: UserResponseDto[] = []
 }
